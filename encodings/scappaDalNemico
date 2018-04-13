@@ -43,13 +43,16 @@ distanzaCorrente(T,ID,D) :- nemico(ID,Peso,X1,Y1),pacmanDLV(T,X2,Y2),X2<=X1,Y2<=
 
 
 %vincolo per evitare di tornare due volte sulla stessa posizione
-:~ pacmanDLV(T,X,Y),pacmanDLV(T1,X,Y),T<T1. [1:20]
+a(T):-pacmanDLV(T,X,Y),pacmanDLV(T1,X,Y),T<T1.
+:~ a(T). [1:20]
 
 %paga se va su una posizione dove c'è un nemico
-:~ pacmanDLV(T,X,Y),nemico(ID,_,X,Y). [1:19]
+b(ID):-pacmanDLV(T,X,Y),nemico(ID,_,X,Y).
+:~ b(ID). [1:19]
 
 %per ogni istante paga la distanza corrente da un dato nemico ad un livello che dipende dal peso di quel nemico
-:~ distanzaCorrente(T,ID,D),D<=7, -(19,D,A),int(A). [1:A]
+c(D,ID,T):- distanzaCorrente(T,ID,D),D<=7.
+:~ c(D,ID,T),-(19,D,A),int(A). [1:A]
 
 %si ha un'urgenza se ci sono più di 2 nemici intorno a pacman all'istante T
 urgenza(T):-pacmanDLV(T,X,Y),not #count{ID: nemico(ID,_,X1,Y1),
@@ -62,7 +65,8 @@ Y1<=D,+(Y,3,D),int(D)}=0.
 :~urgenza(T),pacmanDLV(A,R,C),not moneta(R,C,speciale),+(T,1,A), int(A). [1:11]
 
 %paga la distanza finale da un nemico ad un livello che dipende dal peso di quel nemico
-:~distanzaFinale(ID,D),nemico(ID,Peso,_,_),-(200,D,A),int(A). [A:Peso]
+d(D,ID,Peso):-distanzaFinale(ID,D),nemico(ID,Peso,_,_).
+:~ d(D,ID,Peso),-(200,D,A),int(A). [A:Peso]
 
 % aggiornamento delle monete raccolte
 raccoltaMonetaNormale(T,X,Y):- pacmanDLV(T,X,Y),moneta(X,Y,"normale").

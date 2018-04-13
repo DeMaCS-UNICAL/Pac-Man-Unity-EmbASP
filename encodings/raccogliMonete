@@ -78,4 +78,5 @@ distanza(D) :- monetaPiuVicina(X1,Y1),pacmanDLV(7,X2,Y2),X2<=X1,Y2<=Y1,-(X1,X2,D
 %:~ #count{R,C : raccoltaMonetaNormale(7,R,C)}=0, monetaPiuVicina(X1,Y1),pacmanDLV(7,X2,Y2),&distanza(X2,Y2,X1,Y1;D1). [D1:2]
 
 %controllo per non andare molte volte sulla stessa casella
-:~pacmanDLV(T,X,Y),pacmanDLV(T1,X,Y),T!=T1. [1:1]
+a(T):-pacmanDLV(T,X,Y),pacmanDLV(T1,X,Y),T!=T1.
+:~a(T). [1:1]
