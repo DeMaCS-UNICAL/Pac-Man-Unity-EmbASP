@@ -1,32 +1,19 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
-using it.unical.mat.embasp.@base;
-using it.unical.mat.embasp.specializations.dlv2.desktop;
-using it.unical.mat.embasp.platforms.desktop;
-using System.IO;
-using it.unical.mat.embasp.specializations.dlv.desktop;
-using Assets.Scripts;
-using it.unical.mat.embasp.languages.asp;
-using System.Threading;
+using EmbASP3._5.it.unical.mat.embasp.languages.asp;
+using Assets.Scripts.EmbASP.Utility;
+using Assets.Scripts.EmbASP.Planner;
 using System.Collections.Generic;
 using Assets.Scripts.EmbASP.inputObjects;
-using Assets.Scripts.EmbASP;
-using EmbASP3._5.it.unical.mat.embasp.languages.asp;
-using System.Text;
-using Assets.Scripts.EmbASP.Utility;
 
 public class PlayerController : MonoBehaviour {
-
-  private EmbASPManager embasp;
-
 
   public static int numberOfSteps = 0;
   public float speed = 0.4f;
   Vector2 _dest = Vector2.zero;
   Vector2 _dir = Vector2.zero;
   Vector2 _nextDir = Vector2.zero;
-
 
 
   [Serializable]
@@ -52,27 +39,36 @@ public class PlayerController : MonoBehaviour {
     SM = GameObject.Find("Game Manager").GetComponent<ScoreManager>();
     GUINav = GameObject.Find("UI Manager").GetComponent<GameGUINavigation>();
     _dest = transform.position;
-
-
-    embasp = EmbASPManager.Instance;
-
   }
-  
 
+  bool unaVolta = true;
 
+List<Next> nextMoves = new List<Next>();
   // Update is called once per frame
   void FixedUpdate() {
     switch (GameManager.gameState) {
       case GameManager.GameState.Game:
 
-        SymbolicConstant newMove = embasp.PreviousMove;
-        Vector3 currentPos = new Vector3((int)(embasp.Pacman.transform.position.x + 0.499f), (int) (embasp.Pacman.transform.position.y + 0.499f));
+        if (nextMoves.Count <= 0 || nextMoves == null) {
+          nextMoves = EmbASPManager.Instance.ASPMove();
+          }
+        //PlanManager plan = PlanManager.Instance;
+
+        SymbolicConstant newMove = EmbASPManager.Instance.PreviousMove;
+        Vector3 currentPos = new Vector3((int)(EmbASPManager.Instance.Pacman.transform.position.x + 0.499f), (int) (EmbASPManager.Instance.Pacman.transform.position.y + 0.499f));
+        
         //Debug.Log(currentPos + " " + previousPos);
-        if (Math.Abs(currentPos.x - embasp.PreviousPos.x) + Math.Abs(currentPos.y - embasp.PreviousPos.y) >= 1) {
-          //Debug.Log("Current Pos: " + currentPos);
-          embasp.PreviousPos = currentPos;
-          newMove = embasp.ASPMove();
+        nextMoves.Sort((m1,m2) => m1.getTime().CompareTo(m2.getTime()));
+
+        Next n = nextMoves[0];
+        newMove = n.getAction();
+
+        //Debug.Log(currentPos + " " + EmbASPManager.Instance.PreviousPos);
+        if (Math.Abs(currentPos.x - EmbASPManager.Instance.PreviousPos.x) + Math.Abs(currentPos.y - EmbASPManager.Instance.PreviousPos.y) >= 1) {
+          EmbASPManager.Instance.PreviousPos = currentPos;
+          //nextMoves = EmbASPManager.Instance.ASPMove();
         }
+   
         ReadInputAndMove(newMove);
         Animate();
         break;
@@ -161,7 +157,9 @@ public class PlayerController : MonoBehaviour {
 
         // otherwise, do nothing
       }
+    nextMoves.RemoveAt(0);
     }
+
   }
 
   public Vector2 getDir() {

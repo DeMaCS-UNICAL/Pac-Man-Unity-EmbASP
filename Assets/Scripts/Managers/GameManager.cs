@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.EmbASP.Planner;
+using Assets.Scripts.EmbASP.Utility;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
@@ -19,7 +21,9 @@ public class GameManager : MonoBehaviour {
     private GameObject clyde;
     private GameGUINavigation gui;
 
-	public static bool scared;
+
+
+  public static bool scared;
     static public int score;
 
 	public float scareLength;
@@ -31,7 +35,7 @@ public class GameManager : MonoBehaviour {
     // singleton implementation
     private static GameManager _instance;
 
-    public static GameManager instance
+  public static GameManager instance
     {
         get
         {
@@ -39,6 +43,7 @@ public class GameManager : MonoBehaviour {
             {
                 _instance = GameObject.FindObjectOfType<GameManager>();
                 DontDestroyOnLoad(_instance.gameObject);
+
             }
 
             return _instance;

@@ -36,7 +36,7 @@ public class UIScript : MonoBehaviour {
 
         high = GameObject.Find("Game Manager").GetComponent<ScoreManager>().High();
 
-    //Time.timeScale = 0.5F;
+    Time.timeScale = 0.5F;
 
     // update score text
     score = GameManager.score;

@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{40DB70B5-49D0-D3BE-18D8-F28CBB156472}</ProjectGuid>
+    <ProjectGuid>{F62542A4-9BE7-AC86-375C-55F522C01B40}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -53,8 +53,9 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\A.cs" />
      <Compile Include="Assets\Scripts\AI.cs" />
-     <Compile Include="Assets\Scripts\EmbASP\inputObjects\Next.cs" />
-     <Compile Include="Assets\Scripts\EmbASP\inputObjects\Pacman.cs" />
+     <Compile Include="Assets\Scripts\EmbASP\InputObjects\Next.cs" />
+     <Compile Include="Assets\Scripts\EmbASP\InputObjects\Pacman.cs" />
+     <Compile Include="Assets\Scripts\EmbASP\Planner\PlanManager.cs" />
      <Compile Include="Assets\Scripts\EmbASP\Utility\EmbASPManager.cs" />
      <Compile Include="Assets\Scripts\Energizer.cs" />
      <Compile Include="Assets\Scripts\GhostMove.cs" />
@@ -103,10 +104,10 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
  </Reference>
  <Reference Include="EmbASP3.5">
- <HintPath>C:/Users/Francesco/Desktop/github_projects/Pac-Man-Unity-EmbASP/Pacman/Assets/EmbASP3.5.dll</HintPath>
+ <HintPath>C:/Users/Francesco/Desktop/github_projects/Pac-Man-Unity-EmbASP/Assets/EmbASP3.5.dll</HintPath>
  </Reference>
  <Reference Include="Newtonsoft.Json">
- <HintPath>C:/Users/Francesco/Desktop/github_projects/Pac-Man-Unity-EmbASP/Pacman/Assets/Newtonsoft.Json.dll</HintPath>
+ <HintPath>C:/Users/Francesco/Desktop/github_projects/Pac-Man-Unity-EmbASP/Assets/Newtonsoft.Json.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Advertisements">
  <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.3/UnityEngine.Advertisements.dll</HintPath>
