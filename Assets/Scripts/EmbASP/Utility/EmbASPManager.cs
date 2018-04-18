@@ -14,7 +14,8 @@ namespace Assets.Scripts.EmbASP.Utility {
   class EmbASPManager {
 
     private static EmbASPManager instance;
-
+    private static List<Distance>[,] distances_10;
+    private static List<Distance>[,] distances_5;
     #region Parameters, Getters and Setters
     internal GameObject Pacman { get; set; }
     private GameObject blinky;
@@ -29,6 +30,15 @@ namespace Assets.Scripts.EmbASP.Utility {
 
     #region Constructors
     private EmbASPManager() {
+      distances_5 = new List<Distance>[28, 32];
+      distances_10 = new List<Distance>[28, 32];
+
+      for (int i = 0; i < 28; i++)
+        for (int j = 0; j < 32; j++) {
+          distances_5[i, j] = new List<Distance>();
+          distances_10[i, j] = new List<Distance>();
+        }
+      
       Tiles = new List<TileManager.Tile>();
       manager = GameObject.Find("Game Manager").GetComponent<TileManager>();
       Tiles = manager.tiles;
@@ -41,6 +51,34 @@ namespace Assets.Scripts.EmbASP.Utility {
       PreviousPos = new Vector3(0, 0);
 
       ASPMapper.Instance.RegisterClass(typeof(Next));
+      ASPMapper.Instance.RegisterClass(typeof(Distance));
+
+
+      GenerateFacts(10);
+      GenerateFacts(5);
+      //string encodingResource = @"encodings\min_distances_10.asp";
+      ////Debug.Log("DLV Started: " + numberOfSteps++);
+      //Handler handler = new DesktopHandler(new DLVDesktopService(@"lib\dlv.exe"));
+      //InputProgram encoding = new ASPInputProgram();
+      //encoding.AddFilesPath(encodingResource);
+      //handler.AddProgram(encoding);
+
+      //Output o = handler.StartSync();
+      //AnswerSets answers = (AnswerSets)o;
+
+      ////Debug.Log("Answers: " + o.OutputString);
+      //AnswerSet a = answers.Answersets[0];
+
+      //foreach (object obj in a.Atoms) {
+      //  //Debug.Log(obj.ToString());
+      //  if (obj is Distance) {
+      //    Distance d = (Distance)obj;
+      //    distances_5[d.getX1(), d.getY1()].Add(d);
+      //    //move = nextAction.getAction();
+      //    //Debug.Log("Next Action: " + move);
+      //  }
+      //}
+
     }
     #endregion
 
@@ -57,13 +95,17 @@ namespace Assets.Scripts.EmbASP.Utility {
     public SymbolicConstant GetNextMove(InputProgram facts) {
       SymbolicConstant move = new SymbolicConstant();
       string encodingResource = @"encodings\pacman.asp";
+      //string encodingResource2 = @"encodings\min_distances_5.asp";
       //Debug.Log("DLV Started: " + numberOfSteps++);
       Handler handler = new DesktopHandler(new DLVDesktopService(@"lib\dlv.exe"));
       InputProgram encoding = new ASPInputProgram();
       encoding.AddFilesPath(encodingResource);
+      //InputProgram encoding2 = new ASPInputProgram();
+      //encoding.AddFilesPath(encodingResource2);
       handler.AddProgram(encoding);
+      //handler.AddProgram(encoding2);
       handler.AddProgram(facts);
-
+      handler.AddOption(new OptionDescriptor("-filter=next"));
       Output o = handler.StartSync();
       AnswerSets answers = (AnswerSets)o;
 
@@ -144,6 +186,33 @@ namespace Assets.Scripts.EmbASP.Utility {
       //CHECK THE CONTENT OF A TILE
       //Debug.Log("PacDot[0].pos = (" + pacdots[0].transform.position.x + "," + pacdots[0].transform.position.y + ")");
 
+      //for (int i = 0; i < 28; i++)
+      //  for (int j = 0; j < 32; j++)
+      //    foreach (Distance d in distances[i,j])
+      //      facts.AddObjectInput(d);
+
+
+      for (int i = -1; i <= 1; i++) {
+        if (myPacman.getX() + i > 0 && myPacman.getX() + i < 28)
+          if (GameManager.scared)
+            foreach (Distance d in distances_10[myPacman.getX() + i, myPacman.getY()])
+              facts.AddObjectInput(d);
+          else
+            foreach (Distance d in distances_5[myPacman.getX() + i, myPacman.getY()])
+              facts.AddObjectInput(d);
+        if (myPacman.getY() + i > 0 && myPacman.getY() + i < 32) 
+          if (GameManager.scared)
+            foreach (Distance d in distances_10[myPacman.getX(), myPacman.getY() + i])
+              facts.AddObjectInput(d);
+          else
+            foreach (Distance d in distances_5[myPacman.getX(), myPacman.getY() + i])
+              facts.AddObjectInput(d);
+      }
+
+      if (GameManager.scared)
+        facts.AddProgram("powerup.");
+
+
       foreach (GameObject p in pacdots)
         facts.AddProgram("pellet(" + (int)p.transform.position.x + "," + (int)p.transform.position.y + ").");
 
@@ -151,6 +220,27 @@ namespace Assets.Scripts.EmbASP.Utility {
       facts.AddProgram("ghost(" + (int)inky.transform.position.x + "," + (int)inky.transform.position.y + ",inky).");
       facts.AddProgram("ghost(" + (int)clyde.transform.position.x + "," + (int)clyde.transform.position.y + ",clyde).");
       facts.AddProgram("ghost(" + (int)pinky.transform.position.x + "," + (int)pinky.transform.position.y + ",pinky).");
+
+
+      TileManager.Tile pacmanTile = new TileManager.Tile((int)Pacman.transform.position.x, (int)Pacman.transform.position.y);
+
+      TileManager.Tile first_min = new TileManager.Tile((int)pacdots[0].transform.position.x, (int)pacdots[0].transform.position.y);
+      var minDistance = 10E6;// manager.distance(pacmanTile, first_min);
+
+
+
+      foreach (GameObject p in pacdots) {
+        TileManager.Tile pacdotsTile = new TileManager.Tile((int)p.transform.position.x, (int)p.transform.position.y);
+        var myDistance = manager.distance(pacmanTile, pacdotsTile);
+        if (myDistance < minDistance) {
+          minDistance = myDistance;
+          first_min = pacdotsTile;
+        }
+      }
+
+      facts.AddProgram("closestPellet(" + first_min.x + "," + first_min.y + ").");
+      facts.AddProgram("distanceClosestPellet(" + (int)minDistance + ").");
+
 
       foreach (TileManager.Tile p in Tiles) {
         if (!p.occupied)
@@ -162,5 +252,35 @@ namespace Assets.Scripts.EmbASP.Utility {
       //Debug.Log("CurrentMove: " + move);
       return move;
     }
+
+    private void GenerateFacts(int dimension) {
+      string encodingResource = @"encodings\min_distances_" + dimension + ".asp";
+      //Debug.Log("DLV Started: " + numberOfSteps++);
+      Handler handler = new DesktopHandler(new DLVDesktopService(@"lib\dlv.exe"));
+      InputProgram encoding = new ASPInputProgram();
+      encoding.AddFilesPath(encodingResource);
+      handler.AddProgram(encoding);
+
+      Output o = handler.StartSync();
+      AnswerSets answers = (AnswerSets)o;
+
+      //Debug.Log("Answers: " + o.OutputString);
+      AnswerSet a = answers.Answersets[0];
+
+      foreach (object obj in a.Atoms) {
+        //Debug.Log(obj.ToString());
+        if (obj is Distance) {
+          Distance d = (Distance)obj;
+          if (dimension == 10)
+            distances_10[d.getX1(), d.getY1()].Add(d);
+          else if (dimension == 5)
+            distances_5[d.getX1(), d.getY1()].Add(d);
+
+          //move = nextAction.getAction();
+          //Debug.Log("Next Action: " + move);
+        }
+      }
+    }
+
   }
 }

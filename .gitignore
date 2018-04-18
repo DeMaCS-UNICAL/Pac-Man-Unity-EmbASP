@@ -293,7 +293,6 @@ __pycache__/
 *.xsd.cs
 
 ### Unity ###
-/[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
 /[Bb]uild/

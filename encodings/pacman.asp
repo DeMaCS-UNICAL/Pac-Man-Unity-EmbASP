@@ -8,7 +8,8 @@
 % distanceClosestPellet(X,Y).
 % previous_action(X). %% left, right, up, down
 
-number(1..380).
+
+number(1..10).
 
 :- not #count{X: next(X)} = 1.
 
@@ -42,9 +43,10 @@ minDistancePacmanNextGhost(MD) :- #min{D : distancePacmanNextGhost(D, _)} = MD, 
 % step(1,0).
 % stepN(1,0).
 
-
-:~ minDistancePacmanNextGhost(MD), number(N), Min=N-MD. [Min:4]
+:~ minDistancePacmanNextGhost(MD), Min=10-MD, not powerup. [Min:4]
+:~ minDistancePacmanNextGhost(MD), powerup. [MD:4]
+%:~ minDistancePacmanNextGhost(MD), number(N), Min=N-MD. [Min:4]
 
 :~ nextCell(X,Y), empty(X,Y). [1:3]
-% :~ nextPacmanPosition(X,Y), closestPellet(X,Y), distanceClosestPellet(D). [D:2]
+:~ nextPacmanPosition(X,Y), closestPellet(X,Y), distanceClosestPellet(D). [D:2]
 :~ previous_action(X), next(Y), X!=Y. [1:1]

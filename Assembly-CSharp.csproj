@@ -53,6 +53,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\A.cs" />
      <Compile Include="Assets\Scripts\AI.cs" />
+     <Compile Include="Assets\Scripts\EmbASP\inputObjects\Distance.cs" />
      <Compile Include="Assets\Scripts\EmbASP\inputObjects\Next.cs" />
      <Compile Include="Assets\Scripts\EmbASP\inputObjects\Pacman.cs" />
      <Compile Include="Assets\Scripts\EmbASP\Utility\EmbASPManager.cs" />
@@ -103,10 +104,10 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
  </Reference>
  <Reference Include="EmbASP3.5">
- <HintPath>C:/Users/Francesco/Desktop/github_projects/pacmanClone/Pac-Man-Unity-EmbASP/Assets/EmbASP3.5.dll</HintPath>
+ <HintPath>C:/Users/Francesco/Desktop/github_projects/Pac-Man-Unity-EmbASP/Assets/EmbASP3.5.dll</HintPath>
  </Reference>
  <Reference Include="Newtonsoft.Json">
- <HintPath>C:/Users/Francesco/Desktop/github_projects/pacmanClone/Pac-Man-Unity-EmbASP/Assets/Newtonsoft.Json.dll</HintPath>
+ <HintPath>C:/Users/Francesco/Desktop/github_projects/Pac-Man-Unity-EmbASP/Assets/Newtonsoft.Json.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Advertisements">
  <HintPath>C:/ProgramData/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.3/UnityEngine.Advertisements.dll</HintPath>
