@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Assets.Scripts.EmbASP.Utility;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
@@ -84,6 +85,8 @@ public class GameManager : MonoBehaviour {
         pinky.GetComponent<GhostMove>().speed += Level * SpeedPerLevel;
         inky.GetComponent<GhostMove>().speed += Level * SpeedPerLevel;
         pacman.GetComponent<PlayerController>().speed += Level*SpeedPerLevel/2;
+
+        EmbASPManager.Instance.GenerateCharacters();
     }
 
     private void ResetVariables()

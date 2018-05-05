@@ -4,6 +4,7 @@ using it.unical.mat.embasp.@base;
 using it.unical.mat.embasp.languages.asp;
 using it.unical.mat.embasp.platforms.desktop;
 using it.unical.mat.embasp.specializations.dlv.desktop;
+using it.unical.mat.embasp.specializations.web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,17 +39,8 @@ namespace Assets.Scripts.EmbASP.Utility {
           distances_5[i, j] = new List<Distance>();
           distances_10[i, j] = new List<Distance>();
         }
-      
-      Tiles = new List<TileManager.Tile>();
-      manager = GameObject.Find("Game Manager").GetComponent<TileManager>();
-      Tiles = manager.tiles;
 
-      Pacman = GameObject.Find("pacman");
-      clyde = GameObject.Find("clyde");
-      pinky = GameObject.Find("pinky");
-      inky = GameObject.Find("inky");
-      blinky = GameObject.Find("blinky");
-      PreviousPos = new Vector3(0, 0);
+      GenerateCharacters();
 
       ASPMapper.Instance.RegisterClass(typeof(Next));
       ASPMapper.Instance.RegisterClass(typeof(Distance));
@@ -92,12 +84,26 @@ namespace Assets.Scripts.EmbASP.Utility {
     }
     #endregion
 
+    public void GenerateCharacters() {
+      Tiles = new List<TileManager.Tile>();
+      manager = GameObject.Find("Game Manager").GetComponent<TileManager>();
+      Tiles = manager.tiles;
+
+      Pacman = GameObject.Find("pacman");
+      clyde = GameObject.Find("clyde");
+      pinky = GameObject.Find("pinky");
+      inky = GameObject.Find("inky");
+      blinky = GameObject.Find("blinky");
+      PreviousPos = new Vector3(0, 0);
+
+    }
+
     public SymbolicConstant GetNextMove(InputProgram facts) {
       SymbolicConstant move = new SymbolicConstant();
-      string encodingResource = @"encodings\pacman.asp";
+      string encodingResource = @".\encodings\pacman.asp";
       //string encodingResource2 = @"encodings\min_distances_5.asp";
       //Debug.Log("DLV Started: " + numberOfSteps++);
-      Handler handler = new DesktopHandler(new DLVDesktopService(@"lib\dlv.exe"));
+      Handler handler = new DesktopHandler(new DLVDesktopService(@".\lib\dlv.exe"));
       InputProgram encoding = new ASPInputProgram();
       encoding.AddFilesPath(encodingResource);
       //InputProgram encoding2 = new ASPInputProgram();
@@ -254,9 +260,9 @@ namespace Assets.Scripts.EmbASP.Utility {
     }
 
     private void GenerateFacts(int dimension) {
-      string encodingResource = @"encodings\min_distances_" + dimension + ".asp";
+      string encodingResource = @".\encodings\min_distances_" + dimension + ".asp";
       //Debug.Log("DLV Started: " + numberOfSteps++);
-      Handler handler = new DesktopHandler(new DLVDesktopService(@"lib\dlv.exe"));
+      Handler handler = new DesktopHandler(new DLVDesktopService(@".\lib\dlv.exe"));
       InputProgram encoding = new ASPInputProgram();
       encoding.AddFilesPath(encodingResource);
       handler.AddProgram(encoding);

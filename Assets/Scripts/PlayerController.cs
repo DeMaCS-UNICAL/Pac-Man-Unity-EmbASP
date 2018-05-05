@@ -15,6 +15,7 @@ using Assets.Scripts.EmbASP;
 using EmbASP3._5.it.unical.mat.embasp.languages.asp;
 using System.Text;
 using Assets.Scripts.EmbASP.Utility;
+using UnityEngine.Networking;
 
 public class PlayerController : MonoBehaviour {
 
@@ -57,7 +58,23 @@ public class PlayerController : MonoBehaviour {
     embasp = EmbASPManager.Instance;
 
   }
-  
+
+
+  IEnumerator GetText() {
+    UnityWebRequest www = UnityWebRequest.Get("172.16.1.5/test.php");
+    yield return www.SendWebRequest();
+
+    if (www.isNetworkError || www.isHttpError) {
+      Debug.Log(www.error);
+    }
+    else {
+      // Show results as text
+      Debug.Log(www.downloadHandler.text);
+
+      // Or retrieve results as binary data
+      byte[] results = www.downloadHandler.data;
+    }
+  }
 
 
   // Update is called once per frame
@@ -65,6 +82,7 @@ public class PlayerController : MonoBehaviour {
     switch (GameManager.gameState) {
       case GameManager.GameState.Game:
 
+        //StartCoroutine(GetText());
         SymbolicConstant newMove = embasp.PreviousMove;
         Vector3 currentPos = new Vector3((int)(embasp.Pacman.transform.position.x + 0.499f), (int) (embasp.Pacman.transform.position.y + 0.499f));
         //Debug.Log(currentPos + " " + previousPos);
@@ -79,6 +97,7 @@ public class PlayerController : MonoBehaviour {
 
       case GameManager.GameState.Dead:
         if (!_deadPlaying)
+          EmbASPManager.Instance.GenerateCharacters();
           StartCoroutine("PlayDeadAnimation");
         break;
     }
