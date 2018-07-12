@@ -17,6 +17,7 @@ using System.Text;
 using Assets.Scripts.EmbASP.Utility;
 using UnityEngine.Networking;
 
+
 public class PlayerController : MonoBehaviour {
 
   private EmbASPManager embasp;
@@ -44,11 +45,12 @@ public class PlayerController : MonoBehaviour {
   private GameManager GM;
   private ScoreManager SM;
 
-
+  System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
   private bool _deadPlaying = false;
 
   // Use this for initialization
   void Start() {
+    watch.Start();
     GM = GameObject.Find("Game Manager").GetComponent<GameManager>();
     SM = GameObject.Find("Game Manager").GetComponent<ScoreManager>();
     GUINav = GameObject.Find("UI Manager").GetComponent<GameGUINavigation>();
@@ -78,32 +80,38 @@ public class PlayerController : MonoBehaviour {
 
 
   // Update is called once per frame
+  bool keyboard = true;
   void FixedUpdate() {
     switch (GameManager.gameState) {
       case GameManager.GameState.Game:
 
-        //StartCoroutine(GetText());
-        SymbolicConstant newMove = embasp.PreviousMove;
-        Vector3 currentPos = new Vector3((int)(embasp.Pacman.transform.position.x + 0.499f), (int) (embasp.Pacman.transform.position.y + 0.499f));
-        //Debug.Log(currentPos + " " + previousPos);
-        if (Math.Abs(currentPos.x - embasp.PreviousPos.x) + Math.Abs(currentPos.y - embasp.PreviousPos.y) >= 1) {
-          //Debug.Log("Current Pos: " + currentPos);
-          embasp.PreviousPos = currentPos;
-          newMove = embasp.ASPMove();
+        if (keyboard)
+          ReadInputAndMove(new SymbolicConstant());
+        else {
+          //StartCoroutine(GetText());
+          SymbolicConstant newMove = embasp.PreviousMove;
+          Vector3 currentPos = new Vector3((int)(embasp.Pacman.transform.position.x + 0.499f), (int)(embasp.Pacman.transform.position.y + 0.499f));
+          //Debug.Log(currentPos + " " + previousPos);
+          if (Math.Abs(currentPos.x - embasp.PreviousPos.x) + Math.Abs(currentPos.y - embasp.PreviousPos.y) >= 1) {
+            //Debug.Log("Current Pos: " + currentPos);
+            embasp.PreviousPos = currentPos;
+            newMove = embasp.ASPMove();
+          }
+          ReadInputAndMove(newMove);
         }
-        ReadInputAndMove(newMove);
         Animate();
         break;
 
       case GameManager.GameState.Dead:
         if (!_deadPlaying)
           EmbASPManager.Instance.GenerateCharacters();
-          StartCoroutine("PlayDeadAnimation");
+        StartCoroutine("PlayDeadAnimation");
         break;
     }
 
 
   }
+
 
   IEnumerator PlayDeadAnimation() {
     _deadPlaying = true;
@@ -156,16 +164,27 @@ public class PlayerController : MonoBehaviour {
 
   void ReadInputAndMove(SymbolicConstant nextStep) {
 
+
+
     // move closer to destination
     Vector2 p = Vector2.MoveTowards(transform.position, _dest, speed);
     GetComponent<Rigidbody2D>().MovePosition(p);
 
     // get the next direction from keyboard
     //Debug.Log("NEXT: <" + nextStep + ">");
-    if (nextStep.Value.Equals("right")) _nextDir = Vector2.right;
-    if (nextStep.Value.Equals("left")) _nextDir = -Vector2.right;
-    if (nextStep.Value.Equals("up")) _nextDir = Vector2.up;
-    if (nextStep.Value.Equals("down")) _nextDir = -Vector2.up;
+    if (!keyboard) {
+      if (nextStep.Value.Equals("right")) _nextDir = Vector2.right;
+      if (nextStep.Value.Equals("left")) _nextDir = -Vector2.right;
+      if (nextStep.Value.Equals("up")) _nextDir = Vector2.up;
+      if (nextStep.Value.Equals("down")) _nextDir = -Vector2.up;
+    }
+    else {
+      // get the next direction from keyboard
+      if (Input.GetAxis("Horizontal") > 0) _nextDir = Vector2.right;
+      if (Input.GetAxis("Horizontal") < 0) _nextDir = -Vector2.right;
+      if (Input.GetAxis("Vertical") > 0) _nextDir = Vector2.up;
+      if (Input.GetAxis("Vertical") < 0) _nextDir = -Vector2.up;
+    }
 
     // if pacman is in the center of a tile
     if (Vector2.Distance(_dest, transform.position) < 0.00001f) {
@@ -181,9 +200,14 @@ public class PlayerController : MonoBehaviour {
         // otherwise, do nothing
       }
     }
+    if (Input.GetKeyDown(KeyCode.K))
+      keyboard = !keyboard;
+
+    //if (watch.Elapsed.Minutes == 1 && watch.Elapsed.Seconds == 0 && watch.Elapsed.Milliseconds == 0)
+    //Debug.Log("EmbASP CALL: " + EmbASPManager.Instance.EmbaspCall + "\nTime: " + watch.Elapsed.Minutes + ":" + watch.Elapsed.Seconds + ":" + watch.Elapsed.Milliseconds);
   }
 
-  public Vector2 getDir() {
+  public Vector2 GetDir() {
     return _dir;
   }
 

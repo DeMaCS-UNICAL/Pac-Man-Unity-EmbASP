@@ -18,6 +18,7 @@ namespace Assets.Scripts.EmbASP.Utility {
     private static List<Distance>[,] distances_5;
     #region Parameters, Getters and Setters
     internal GameObject Pacman { get; set; }
+    internal int EmbaspCall { get; set; }
     private GameObject blinky;
     private GameObject pinky;
     private GameObject inky;
@@ -112,6 +113,10 @@ namespace Assets.Scripts.EmbASP.Utility {
       handler.AddProgram(facts);
       handler.AddOption(new OptionDescriptor("-filter=next"));
       Output o = handler.StartSync();
+      EmbaspCall++;
+      
+
+
       AnswerSets answers = (AnswerSets)o;
 
       System.Random r = new System.Random();
@@ -253,6 +258,7 @@ namespace Assets.Scripts.EmbASP.Utility {
       }
 
       SymbolicConstant move = GetNextMove(facts);
+
       PreviousMove = move;
       //Debug.Log("CurrentMove: " + move);
       return move;
