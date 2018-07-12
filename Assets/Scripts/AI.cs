@@ -173,7 +173,7 @@ public class AI : MonoBehaviour {
 			targetTile = tiles[manager.Index((int)targetPos.x, (int)targetPos.y)];
 			break;
 		case "pinky":	// target = pacman + 4*pacman's direction (4 steps ahead of pacman)
-			dir = target.GetComponent<PlayerController>().getDir();
+			dir = target.GetComponent<PlayerController>().GetDir();
 			targetPos = new Vector3 (target.position.x+0.499f, target.position.y+0.499f) + 4*dir;
 
 			// if pacmans going up, not 4 ahead but 4 up and 4 left is the target
@@ -184,7 +184,7 @@ public class AI : MonoBehaviour {
 			targetTile = tiles[manager.Index((int)targetPos.x, (int)targetPos.y)];
 			break;
 		case "inky":	// target = ambushVector(pacman+2 - blinky) added to pacman+2
-			dir = target.GetComponent<PlayerController>().getDir();
+			dir = target.GetComponent<PlayerController>().GetDir();
 			Vector3 blinkyPos = GameObject.Find ("blinky").transform.position;
 			Vector3 ambushVector = target.position + 2*dir - blinkyPos ;
 			targetPos = new Vector3 (target.position.x+0.499f, target.position.y+0.499f) + 2*dir + ambushVector;

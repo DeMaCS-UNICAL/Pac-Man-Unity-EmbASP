@@ -44,8 +44,8 @@ public class MyCallback : Callback
         }
       }
       catch (Exception e) {
-        Console.WriteLine(e.ToString());
-        Console.Write(e.StackTrace);
+        Debug.LogError(e.ToString());
+        Debug.LogError(e.StackTrace);
       }
 		}
 	}
