@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour {
   Vector2 _dest = Vector2.zero;
   Vector2 _dir = Vector2.zero;
   Vector2 _nextDir = Vector2.zero;
+  private bool keyboard = false;
 
 
 
@@ -45,12 +46,12 @@ public class PlayerController : MonoBehaviour {
   private GameManager GM;
   private ScoreManager SM;
 
-  System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+  //System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
   private bool _deadPlaying = false;
 
   // Use this for initialization
   void Start() {
-    watch.Start();
+    //watch.Start();
     GM = GameObject.Find("Game Manager").GetComponent<GameManager>();
     SM = GameObject.Find("Game Manager").GetComponent<ScoreManager>();
     GUINav = GameObject.Find("UI Manager").GetComponent<GameGUINavigation>();
@@ -80,7 +81,6 @@ public class PlayerController : MonoBehaviour {
 
 
   // Update is called once per frame
-  bool keyboard = true;
   void FixedUpdate() {
     switch (GameManager.gameState) {
       case GameManager.GameState.Game:
