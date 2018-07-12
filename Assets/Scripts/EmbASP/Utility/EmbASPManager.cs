@@ -113,7 +113,7 @@ namespace Assets.Scripts.EmbASP.Utility {
       handler.AddProgram(facts);
       handler.AddOption(new OptionDescriptor("-filter=next"));
       Output o = handler.StartSync();
-      EmbaspCall++;
+      //EmbaspCall++;
       
 
 
